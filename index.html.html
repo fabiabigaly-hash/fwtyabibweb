@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello Kitty Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(180deg, 
+                #f8bbd9 0%, 
+                #e09cb8 20%, 
+                #d18bb7 40%, 
+                #c27bb6 60%, 
+                #b36bb5 80%, 
+                #a45bb4 100%
+            );
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Contenedor principal de la app móvil */
+        .mobile-container {
+            max-width: 414px;
+            width: 100%;
+            min-height: 100vh;
+            margin: 0 auto;
+            position: relative;
+            background: linear-gradient(180deg, 
+                rgba(248, 187, 217, 0.9) 0%, 
+                rgba(224, 156, 184, 0.9) 20%, 
+                rgba(209, 139, 183, 0.9) 40%, 
+                rgba(194, 123, 182, 0.9) 60%, 
+                rgba(179, 107, 181, 0.9) 80%, 
+                rgba(164, 91, 180, 0.9) 100%
+            );
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Elemento circular decorativo con Hello Kitty */
+        .hello-kitty-circle {
+            position: absolute;
+            top: -80px;
+            left: -80px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(
+                circle at center,
+                rgba(255, 255, 255, 0.2) 0%,
+                rgba(255, 255, 255, 0.1) 40%,
+                rgba(255, 255, 255, 0.05) 70%,
+                transparent 100%
+            );
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: float 6s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        .kitty-icon {
+            font-size: 40px;
+            color: rgba(255, 255, 255, 0.8);
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* Header principal */
+        .header {
+            padding: 60px 40px 40px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .welcome-text {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            line-height: 1.3;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: fadeInDown 1s ease;
+        }
+
+        .store-subtitle {
+            font-size: 16px;
+            font-weight: 300;
+            opacity: 0.9;
+            animation: fadeInDown 1s ease 0.3s both;
+        }
+
+        /* Contenedor de productos */
+        .products-container {
+            padding: 20px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            flex: 1;
+            animation: fadeInUp 1s ease 0.5s both;
+        }
+
+        /* Tarjeta de producto principal */
+        .product-card {
+            width: 280px;
+            height: 280px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.15),
+                0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(248, 187, 217, 0.1), 
+                rgba(255, 182, 193, 0.1)
+            );
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.2),
+                0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Imagen del producto */
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #ffb6c1, #ffc0cb, #ffb6c1);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .product-image::before {
+            content: '🎀';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            animation: rotate 4s linear infinite;
+        }
+
+        .hello-kitty-product {
+            font-size: 80px;
+            margin-bottom: 10px;
+            animation: wiggle 3s ease-in-out infinite;
+        }
+
+        .product-title {
+            color: #d63384;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .product-subtitle {
+            color: #6c757d;
+            font-size: 12px;
+            text-align: center;
+            font-weight: 400;
+            margin-top: 5px;
+        }
+
+        .product-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #495057;
+            font-size: 14px;
+        }
+
+        .product-price {
+            font-weight: 700;
+            color: #d63384;
+            font-size: 18px;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stars {
+            color: #ffc107;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Botón Shop */
+        .shop-button {
+            width: 280px;
+            height: 60px;
+            background: linear-gradient(135deg, #6c5ce7, #74b9ff);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+            box-shadow: 0 10px 25px rgba(108, 92, 231, 0.3);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+        }
+
+        .shop-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.3), 
+                transparent
+            );
+            transition: left 0.6s ease;
+        }
+
+        .shop-button:hover::before {
+            left: 100%;
+        }
+
+        .shop-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(108, 92, 231, 0.4);
+            background: linear-gradient(135deg, #5f4fcf, #6ba6e3);
+        }
+
+        .shop-button:active {
+            transform: translateY(-1px);
+            transition: transform 0.1s ease;
+        }
+
+        /* Navegación inferior */
+        .bottom-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 414px;
+            height: 90px;
+            background: linear-gradient(180deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(255, 255, 255, 0.98) 100%
+            );
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .nav-circle {
+            width: 60px;
+            height: 60px;
+            background: rgba(248, 187, 217, 0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(248, 187, 217, 0.3);
+        }
+
+        .nav-circle:hover {
+            background: rgba(248, 187, 217, 0.3);
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(248, 187, 217, 0.4);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            color: #6c5ce7;
+        }
+
+        /* Elementos decorativos adicionales */
+        .floating-hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .heart {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 20px;
+            animation: floatHeart 8s linear infinite;
+        }
+
+        .heart:nth-child(1) {
+            left: 10%;
+            animation-delay: 0s;
+            animation-duration: 10s;
+        }
+
+        .heart:nth-child(2) {
+            left: 80%;
+            animation-delay: 3s;
+            animation-duration: 12s;
+        }
+
+        .heart:nth-child(3) {
+            left: 50%;
+            animation-delay: 6s;
+            animation-duration: 9s;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Animaciones de entrada */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Estados de carga */
+        .loading .shop-button {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            cursor: not-allowed;
+            animation: pulse 1.5s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* Responsive para pantallas más pequeñas */
+        @media (max-width: 414px) {
+            .mobile-container {
+                margin: 0;
+                border-radius: 0;
+            }
+
+            .header {
+                padding: 50px 30px 30px;
+            }
+
+            .welcome-text {
+                font-size: 24px;
+            }
+
+            .products-container {
+                padding: 15px 30px;
+            }
+
+            .product-card {
+                width: 260px;
+                height: 260px;
+            }
+
+            .shop-button {
+                width: 260px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .header {
+                padding: 40px 25px 25px;
+            }
+
+            .welcome-text {
+                font-size: 22px;
+            }
+
+            .products-container {
+                padding: 15px 25px;
+            }
+
+            .product-card {
+                width: 240px;
+                height: 240px;
+            }
+
+            .product-image {
+                height: 180px;
+            }
+
+            .hello-kitty-product {
+                font-size: 70px;
+            }
+
+            .shop-button {
+                width: 240px;
+                height: 55px;
+                font-size: 18px;
+            }
+        }
+
+        /* Efectos especiales */
+        .sparkle {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            animation: sparkleAnimation 2s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes sparkleAnimation {
+            0% {
+                opacity: 1;
+                transform: scale(0) rotate(0deg);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.5) rotate(180deg);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0) rotate(360deg);
+            }
+        }
+
+        /* Modo nocturno (opcional) */
+        @media (prefers-color-scheme: dark) {
+            .product-card {
+                background: rgba(255, 255, 255, 0.98);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <!-- Elementos decorativos -->
+        <div class="hello-kitty-circle">
+            <div class="kitty-icon">😺</div>
+        </div>
+
+        <div class="floating-hearts">
+            <div class="heart">💕</div>
+            <div class="heart">💖</div>
+            <div class="heart">💝</div>
+        </div>
+
+        <!-- Header principal -->
+        <header class="header">
+            <h1 class="welcome-text">WELCOME TO<br>MY STORE</h1>
+            <p class="store-subtitle">Kawaii & Cute Collections</p>
+        </header>
+
+        <!-- Contenedor de productos -->
+        <main class="products-container">
+            <div class="product-card" id="productCard">
+                <div class="product-image">
+                    <div class="hello-kitty-product">😻</div>
+                    <div class="product-title">Hello Kitty</div>
+                    <div class="product-subtitle">Cute & Kawaii Collection</div>
+                </div>
+                
+                <div class="product-details">
+                    <div class="product-price">$24.99</div>
+                    <div class="product-rating">
+                        <span class="stars">⭐⭐⭐⭐⭐</span>
+                        <span>4.9</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="shop-button" id="shopButton">
+                <i class="fas fa-shopping-bag"></i> SHOP
+            </button>
+        </main>
+
+        <!-- Navegación inferior -->
+        <nav class="bottom-navigation">
+            <div class="nav-circle" id="homeButton">
+                <i class="fas fa-home nav-icon"></i>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        // Inicialización cuando se carga el DOM
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeStore();
+        });
+
+        function initializeStore() {
+            setupEventListeners();
+            createSparkleEffect();
+            setupProductAnimations();
+            initializeFloatingElements();
+        }
+
+        function setupEventListeners() {
+            const shopButton = document.getElementById('shopButton');
+            const productCard = document.getElementById('productCard');
+            const homeButton = document.getElementById('homeButton');
+
+            // Botón de compra
+            shopButton.addEventListener('click', handleShopButtonClick);
+
+            // Tarjeta de producto
+            productCard.addEventListener('click', handleProductClick);
+
+            // Botón home
+            homeButton.addEventListener('click', handleHomeClick);
+
+            // Efectos de mouse/touch
+            document.addEventListener('click', createClickEffect);
+        }
+
+        // Manejar clic en botón SHOP
+        function handleShopButtonClick() {
+            const button = document.getElementById('shopButton');
+            const originalContent = button.innerHTML;
+            
+            // Estado de carga
+            button.classList.add('loading');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+            
+            // Simular carga
+            setTimeout(() => {
+                button.innerHTML = '<i class="fas fa-check"></i> Added to Cart!';
+                button.style.background = 'linear-gradient(135deg, #00b894, #00a085)';
+                
+                // Crear efecto de éxito
+                createSuccessEffect();
+                
+                setTimeout(() => {
+                    button.innerHTML = originalContent;
+                    button.style.background = 'linear-gradient(135deg, #6c5ce7, #74b9ff)';
+                    button.classList.remove('loading');
+                }, 2000);
+            }, 1500);
+        }
+
+        // Manejar clic en producto
+        function handleProductClick() {
+            const card = document.getElementById('productCard');
+            
+            // Efecto de pulsación
+            card.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                card.style.transform = 'translateY(-8px) scale(1.02)';
+            }, 100);
+
+            // Cambiar producto (simulación)
+            changeProduct();
+        }
+
+        // Cambiar producto aleatoriamente
+        function changeProduct() {
+            const products = [
+                { emoji: '😻', name: 'Hello Kitty', price: '$24.99', rating: '4.9' },
+                { emoji: '🐱', name: 'Kitty Pink', price: '$19.99', rating: '4.8' },
+                { emoji: '😸', name: 'Happy Kitty', price: '$22.99', rating: '4.7' },
+                { emoji: '😺', name: 'Smile Kitty', price: '$26.99', rating: '5.0' }
+            ];
+
+            const randomProduct = products[Math.floor(Math.random() * products.length)];
+            
+            const productEmoji = document.querySelector('.hello-kitty-product');
+            const productTitle = document.querySelector('.product-title');
+            const productPrice = document.querySelector('.product-price');
+            const ratingText = document.querySelector('.product-rating span:last-child');
+
+            // Animación de cambio
+            productEmoji.style.opacity = '0';
+            
+            setTimeout(() => {
+                productEmoji.textContent = randomProduct.emoji;
+                productTitle.textContent = randomProduct.name;
+                productPrice.textContent = randomProduct.price;
+                ratingText.textContent = randomProduct.rating;
+                
+                productEmoji.style.opacity = '1';
+            }, 200);
+        }
+
+        // Manejar botón home
+        function handleHomeClick() {
+            const button = document.getElementById('homeButton');
+            
+            // Efecto de pulsación
+            button.style.transform = 'scale(1.2)';
+            button.style.background = 'rgba(248, 187, 217, 0.5)';
+            
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+                button.style.background = 'rgba(248, 187, 217, 0.2)';
+            }, 200);
+
+            // Simular navegación
+            showHomeMessage();
+        }
+
+        // Mostrar mensaje de home
+        function showHomeMessage() {
+            const message = document.createElement('div');
+            message.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(108, 92, 231, 0.9);
+                color: white;
+                padding: 20px 30px;
+                border-radius: 15px;
+                font-weight: 600;
+                z-index: 200;
+                backdrop-filter: blur(10px);
+                animation: fadeInScale 0.3s ease;
+            `;
+            message.textContent = '🏠 You are already home!';
+            
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                message.remove();
+            }, 2000);
+        }
+
+        // Crear efectos de clic
+        function createClickEffect(e) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.innerHTML = '✨';
+            sparkle.style.left = e.clientX + 'px';
+            sparkle.style.top = e.clientY + 'px';
+            sparkle.style.position = 'fixed';
+            sparkle.style.zIndex = '1000';
+            
+            document.body.appendChild(sparkle);
+            
+            setTimeout(() => {
+                sparkle.remove();
+            }, 2000);
+        }
+
+        // Crear efecto de éxito
+        function createSuccessEffect() {
+            const successElements = ['🎉', '🌟', '💖', '✨'];
+            
+            for (let i = 0; i < 6; i++) {
+                setTimeout(() => {
+                    const element = document.createElement('div');
+                    element.style.cssText = `
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        font-size: 30px;
+                        z-index: 1000;
+                        pointer-events: none;
+                        animation: successBurst 1s ease-out forwards;
+                        transform: translate(-50%, -50%);
+                    `;
+                    element.textContent = successElements[Math.floor(Math.random() * successElements.length)];
+                    
+                    // Posición aleatoria
+                    const angle = (Math.PI * 2 * i) / 6;
+                    const distance = 60;
+                    const x = Math.cos(angle) * distance;
+                    const y = Math.sin(angle) * distance;
+                    
+                    element.style.setProperty('--x', x + 'px');
+                    element.style.setProperty('--y', y + 'px');
+                    
+                    document.body.appendChild(element);
+                    
+                    setTimeout(() => {
+                        element.remove();
+                    }, 1000);
+                }, i * 100);
+            }
+        }
+
+        // Efectos de sparkle periódicos
+        function createSparkleEffect() {
+            setInterval(() => {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.innerHTML = Math.random() > 0.5 ? '✨' : '💫';
+                sparkle.style.left = Math.random() * window.innerWidth + 'px';
+                sparkle.style.top = Math.random() * window.innerHeight + 'px';
+                sparkle.style.position = 'fixed';
+                sparkle.style.zIndex = '5';
+                
+                document.body.appendChild(sparkle);
+                
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 2000);
+            }, 3000);
+        }
+
+        // Configurar animaciones de producto
+        function setupProductAnimations() {
+            const productCard = document.getElementById('productCard');
+            
+            // Auto-cambio de producto cada 10 segundos
+            setInterval(() => {
+                if (!document.hidden) {
+                    changeProduct();
+                }
+            }, 10000);
+
+            // Efecto de respiración en la tarjeta
+            setInterval(() => {
+                if (!productCard.matches(':hover')) {
+                    productCard.style.transform = 'scale(1.01)';
+                    setTimeout(() => {
+                        productCard.style.transform = 'scale(1)';
+                    }, 1000);
+                }
+            }, 4000);
+        }
+
+        // Inicializar elementos flotantes adicionales
+        function initializeFloatingElements() {
+            // Crear corazones adicionales dinámicamente
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.style.cssText = `
+                    position: absolute;
+                    color: rgba(255, 255, 255, 0.2);
+                    font-size: ${Math.random() * 10 + 15}px;
+                    left: ${Math.random() * 100}%;
+                    animation: floatHeart ${Math.random() * 5 + 8}s linear infinite;
+                    pointer-events: none;
+                `;
+                heart.textContent = Math.random() > 0.5 ? '💕' : '💖';
+                
+                document.querySelector('.floating-hearts').appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 15000);
+            }, 5000);
+        }
+
+        // Añadir estilos dinámicos para animaciones
+        const dynamicStyles = document.createElement('style');
+        dynamicStyles.textContent = `
+            @keyframes fadeInScale {
+                from {
+                    opacity: 0;
+                    transform: translate(-50%, -50%) scale(0.5);
+                }
+                to {
+                    opacity: 1;
+                    transform: translate(-50%, -50%) scale(1);
+                }
+            }
+            
+            @keyframes successBurst {
+                0% {
+                    opacity: 1;
+                    transform: translate(-50%, -50%) scale(1);
+                }
+                100% {
+                    opacity: 0;
+                    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1.5);
+                }
+            }
+        `;
+        document.head.appendChild(dynamicStyles);
+
+        // Gestos táctiles básicos
+        let touchStartY = 0;
+        
+        document.addEventListener('touchstart', function(e) {
+            touchStartY = e.touches[0].clientY;
+        });
+        
+        document.addEventListener('touchend', function(e) {
+            const touchEndY = e.changedTouches[0].clientY;
+            const difference = touchStartY - touchEndY;
+            
+            // Detectar swipe hacia arriba
+            if (difference > 50) {
+                const shopButton = document.getElementById('shopButton');
+                shopButton.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    </script>
+</body>
+</html>
